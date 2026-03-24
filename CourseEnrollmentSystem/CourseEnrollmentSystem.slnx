@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/CourseEnrollment.Api/CourseEnrollment.Api.csproj" />
+  <Project Path="src/CourseEnrollment.Application/CourseEnrollment.Application.csproj" />
+  <Project Path="src/CourseEnrollment.Domain/CourseEnrollment.Domain.csproj" />
+  <Project Path="src/CourseEnrollment.Infrastructure/CourseEnrollment.Infrastructure.csproj" />
+  <Project Path="src/CourseEnrollment.Web/CourseEnrollment.Web.csproj" Id="6a046ece-f7f1-4b1e-9ccc-4271d26e5624" />
+  <Project Path="tests/CourseEnrollment.Application.Tests/CourseEnrollment.Application.Tests.csproj" />
+  <Project Path="tests/CourseEnrollment.Domain.Tests/CourseEnrollment.Domain.Tests.csproj" />
+</Solution>
