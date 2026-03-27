@@ -20,7 +20,10 @@ namespace CourseEnrollment.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Status)
                    .IsRequired();
 
-            builder.OwnsMany(c => c.Enrollments);
+            // Use HasMany if Enrollment is an entity with Id and FK
+            builder.HasMany(c => c.Enrollments)
+                   .WithOne() // or .WithOne(e => e.Course) if navigation exists
+                   .HasForeignKey(e => e.CourseId);
         }
     }
 

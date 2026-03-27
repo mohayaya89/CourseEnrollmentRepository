@@ -8,50 +8,33 @@ namespace CourseEnrollment.Application.Features.Courses.Queries.GetCourseById
     public class CourseDto
     {
         public Guid Id { get; init; }
-        public string Title { get; init; }
+        public string Title { get; init; } = string.Empty;
         public int Capacity { get; init; }
-        public string Status { get; init; }
+        public string Status { get; init; } = string.Empty;
         public int ActiveEnrollments { get; init; }
     }
 
+    // (example — not adding to repo)
     public class MemoryCache<TKey, TValue>
     {
-        private class CacheItem
+        // Use this instead
+        private readonly ConcurrentDictionary<object, TValue> _inner = new();
+
+        public void Set(TKey? key, TValue value)
         {
-            public TValue Value { get; set; }
-            public DateTime Expiration { get; set; }
+            var mapKey = key is null ? NullKey.Instance : (object)key;
+            _inner[mapKey] = value;
         }
 
-        private readonly ConcurrentDictionary<TKey, CacheItem> _cache = new();
-
-        public void Set(TKey key, TValue value, TimeSpan ttl)
+        public bool TryGet(TKey? key, out TValue? value)
         {
-            var item = new CacheItem
-            {
-                Value = value,
-                Expiration = DateTime.UtcNow.Add(ttl)
-            };
-
-            _cache[key] = item;
+            var mapKey = key is null ? NullKey.Instance : (object)key;
+            return _inner.TryGetValue(mapKey, out value);
         }
 
-        public bool TryGet(TKey key, out TValue value)
-        {
-            value = default;
-
-            if (_cache.TryGetValue(key, out var item))
-            {
-                if (item.Expiration > DateTime.UtcNow)
-                {
-                    value = item.Value;
-                    return true;
-                }
-
-                _cache.TryRemove(key, out _);
-            }
-
-            return false;
+        private sealed class NullKey 
+        { 
+            public static readonly NullKey Instance = new(); 
         }
     }
-
 }

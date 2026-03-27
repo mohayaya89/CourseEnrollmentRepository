@@ -9,9 +9,8 @@ namespace CourseEnrollment.Domain.Entities
 {
     public class Student : BaseEntity
     {
-        public FullName Name { get; private set; }
-        public Email Email { get; private set; }
-
+        public FullName? Name { get; private set; }
+        public Email? Email { get; private set; }
         public bool IsActive { get; private set; }
 
         private Student() { } // For EF

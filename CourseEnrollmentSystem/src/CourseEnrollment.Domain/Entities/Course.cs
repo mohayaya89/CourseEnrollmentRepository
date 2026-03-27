@@ -12,11 +12,10 @@ namespace CourseEnrollment.Domain.Entities
     {
         private readonly List<Enrollment> _enrollments = new();
 
-        public string Title { get; private set; }
+        public string Title { get; private set; } = string.Empty;
         public int Capacity { get; private set; }
         public DateTime EnrollmentDeadline { get; private set; }
         public CourseStatus Status { get; private set; }
-
 
         public IReadOnlyCollection<Enrollment> Enrollments => _enrollments.AsReadOnly();
 

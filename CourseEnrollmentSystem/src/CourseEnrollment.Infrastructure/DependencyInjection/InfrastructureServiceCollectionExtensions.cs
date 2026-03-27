@@ -21,8 +21,12 @@ namespace CourseEnrollment.Infrastructure.DependencyInjection
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            var conn = configuration.GetConnectionString("AppDbContext");
+            if (string.IsNullOrWhiteSpace(conn))
+                throw new InvalidOperationException("Connection string 'AppDbContext' is not configured. Add it to the host project's configuration (e.g. CourseEnrollment.Web appsettings or user secrets).");
+
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("Default")));
+                options.UseSqlServer(conn));
 
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();

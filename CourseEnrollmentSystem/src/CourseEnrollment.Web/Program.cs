@@ -1,6 +1,5 @@
 using CourseEnrollment.Application;
 using CourseEnrollment.Infrastructure.DependencyInjection;
-using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
