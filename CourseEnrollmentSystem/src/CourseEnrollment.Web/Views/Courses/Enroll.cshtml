@@ -1,0 +1,18 @@
+@model CourseEnrollment.Application.Features.Courses.Queries.GetCourseById.CourseDto
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<h2>@Model.Title</h2>
+
+<div>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Capacity:</strong> @Model.Capacity</p>
+    <p><strong>Active Enrollments:</strong> @Model.ActiveEnrollments</p>
+</div>
+
+<form asp-action="Enroll" asp-controller="Courses" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-primary" @(Model.Status != "Open" ? "disabled" : "")>Enroll</button>
+</form>
