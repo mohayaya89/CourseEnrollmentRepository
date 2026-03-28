@@ -28,6 +28,11 @@ namespace CourseEnrollment.Infrastructure.Repository
         {
             await _context.Courses.AddAsync(course, cancellationToken);
         }
+
+        public async Task<List<Course>> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Courses.ToListAsync(cancellationToken);
+        }
     }
 
 }

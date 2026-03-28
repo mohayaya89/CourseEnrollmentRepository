@@ -8,8 +8,7 @@ using MediatR;
 
 namespace CourseEnrollment.Application.Features.Courses.Commands.EnrollStudent
 {
-    public class EnrollStudentCommandHandler
-    : IRequestHandler<EnrollStudentCommand, Unit>
+    public class EnrollStudentCommandHandler : IRequestHandler<EnrollStudentCommand, Unit>
     {
         private readonly ICourseRepository _repository;
         private readonly IUnitOfWork _unitOfWork;

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MediatR;
 
 namespace CourseEnrollment.Application.Features.Courses.Queries.GetCourses
 {
-    internal class GetCoursesQuery
+    public record GetCoursesQuery : IRequest<IEnumerable<CourseListDto>>
     {
     }
 }

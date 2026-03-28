@@ -8,6 +8,7 @@ namespace CourseEnrollment.Domain.Interfaces
     public interface ICourseRepository
     {
         Task<Course?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<Course>> GetAllAsync(CancellationToken cancellationToken);
         Task AddAsync(Course course, CancellationToken cancellationToken);
     }
 }

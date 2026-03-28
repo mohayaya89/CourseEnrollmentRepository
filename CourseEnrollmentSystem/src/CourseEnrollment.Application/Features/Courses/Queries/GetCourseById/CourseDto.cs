@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Concurrent;
+using CourseEnrollment.Domain.Enums;
 
 namespace CourseEnrollment.Application.Features.Courses.Queries.GetCourseById
 {
@@ -10,7 +8,7 @@ namespace CourseEnrollment.Application.Features.Courses.Queries.GetCourseById
         public Guid Id { get; init; }
         public string Title { get; init; } = string.Empty;
         public int Capacity { get; init; }
-        public string Status { get; init; } = string.Empty;
+        public CourseStatus Status { get; init; } 
         public int ActiveEnrollments { get; init; }
     }
 

@@ -11,8 +11,9 @@ namespace CourseEnrollment.Application
         // Adds application-layer services. Expand registrations as needed.
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly));
+            services.AddMediatR(
+                cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyMarker).Assembly)
+                );
 
             services.AddValidatorsFromAssembly(typeof(ApplicationAssemblyMarker).Assembly);
 

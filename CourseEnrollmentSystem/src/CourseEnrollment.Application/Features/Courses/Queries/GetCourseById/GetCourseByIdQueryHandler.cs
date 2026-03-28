@@ -9,8 +9,7 @@ using MediatR;
 
 namespace CourseEnrollment.Application.Features.Courses.Queries.GetCourseById
 {
-    public class GetCourseByIdQueryHandler
-    : IRequestHandler<GetCourseByIdQuery, CourseDto>
+    public class GetCourseByIdQueryHandler : IRequestHandler<GetCourseByIdQuery, CourseDto>
     {
         private readonly ICourseRepository _repository;
         private readonly IMapper _mapper;

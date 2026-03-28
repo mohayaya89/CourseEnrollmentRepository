@@ -1,0 +1,38 @@
+﻿@using CourseEnrollment.Application.Features.Courses.Queries.GetCourses
+@model IEnumerable<CourseEnrollment.Application.Features.Courses.Queries.GetCourses.CourseListDto>
+
+<h2>Courses</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || !Model.Any())
+        {
+            <tr>No courses available.</tr>
+        }
+        else
+        {
+            @foreach (var course in Model)
+            {
+                <tr>
+                    <td>@course.Title</td>
+                    <td>@course.Status</td>
+                    <td>
+                        <a asp-controller="Courses"
+                               asp-action="Details"
+                               asp-route-id="@course.Id" class="btn btn-primary">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        
+    </tbody>
+</table>
