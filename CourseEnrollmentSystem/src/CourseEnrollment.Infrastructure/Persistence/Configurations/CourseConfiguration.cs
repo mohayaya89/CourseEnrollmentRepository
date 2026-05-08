@@ -20,9 +20,15 @@ namespace CourseEnrollment.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Status)
                    .IsRequired();
 
-            // Use HasMany if Enrollment is an entity with Id and FK
+            // Course extends BasePerson for Id/DomainEvents but these person-specific columns
+            // are not meaningful for a course, so we exclude them from the schema.
+            builder.Ignore(c => c.Name);
+            builder.Ignore(c => c.Email);
+            builder.Ignore(c => c.PhoneNumber);
+            builder.Ignore(c => c.DateOfBirth);
+
             builder.HasMany(c => c.Enrollments)
-                   .WithOne() // or .WithOne(e => e.Course) if navigation exists
+                   .WithOne()
                    .HasForeignKey(e => e.CourseId);
         }
     }
