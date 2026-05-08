@@ -51,7 +51,8 @@ namespace CourseEnrollment.Application.Tests.Auth
             var result = await _handler.Handle(new RefreshTokenCommand(rawToken), CancellationToken.None);
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Value!.AccessToken, Is.EqualTo("new-access-token"));
+            Assert.That(result.Value!.Response.AccessToken, Is.EqualTo("new-access-token"));
+            Assert.That(result.Value.RawRefreshToken, Is.EqualTo("new-refresh-token"));
 
             await _tokenStore.Received(1).RevokeAsync(TokenId, ct: Arg.Any<CancellationToken>());
             await _tokenStore.Received(1).StoreAsync(UserId, "new-refresh-token", Arg.Any<DateTime>(), Arg.Any<CancellationToken>());

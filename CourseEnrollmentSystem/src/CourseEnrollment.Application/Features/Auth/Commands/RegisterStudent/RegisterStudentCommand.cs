@@ -9,5 +9,5 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.RegisterStudent
         string FirstName,
         string LastName,
         string Email,
-        string Password) : IRequest<Result<AuthResponseDto>>;
+        string Password) : IRequest<Result<AuthTokenPair>>;
 }

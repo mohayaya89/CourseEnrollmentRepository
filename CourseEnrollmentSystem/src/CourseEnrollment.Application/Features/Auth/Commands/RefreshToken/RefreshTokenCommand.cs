@@ -8,5 +8,5 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.RefreshToken
     /// Rotates the refresh token: validates the supplied raw token, revokes it,
     /// and issues a new access + refresh token pair.
     /// </summary>
-    public record RefreshTokenCommand(string RawRefreshToken) : IRequest<Result<AuthResponseDto>>;
+    public record RefreshTokenCommand(string RawRefreshToken) : IRequest<Result<AuthTokenPair>>;
 }

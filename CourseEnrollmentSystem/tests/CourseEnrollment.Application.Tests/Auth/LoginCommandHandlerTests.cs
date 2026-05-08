@@ -50,9 +50,10 @@ namespace CourseEnrollment.Application.Tests.Auth
             var result = await _handler.Handle(command, CancellationToken.None);
 
             Assert.That(result.Succeeded, Is.True);
-            Assert.That(result.Value!.AccessToken, Is.EqualTo("access-token"));
-            Assert.That(result.Value.Roles, Contains.Item("Student"));
-            Assert.That(result.Value.StudentId, Is.EqualTo(StudentId));
+            Assert.That(result.Value!.Response.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(result.Value.Response.Roles, Contains.Item("Student"));
+            Assert.That(result.Value.Response.StudentId, Is.EqualTo(StudentId));
+            Assert.That(result.Value.RawRefreshToken, Is.EqualTo("raw-refresh-token"));
 
             await _tokenStore.Received(1).StoreAsync(UserId, "raw-refresh-token", Arg.Any<DateTime>(), Arg.Any<CancellationToken>());
         }

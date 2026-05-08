@@ -14,7 +14,7 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.RegisterStudent
     /// All identity + student creation is transactional — if either step fails everything rolls back.
     /// </summary>
     public class RegisterStudentCommandHandler
-        : IRequestHandler<RegisterStudentCommand, Result<AuthResponseDto>>
+        : IRequestHandler<RegisterStudentCommand, Result<AuthTokenPair>>
     {
         private readonly IIdentityService _identity;
         private readonly IJwtTokenService _jwt;
@@ -36,14 +36,14 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.RegisterStudent
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<AuthResponseDto>> Handle(
+        public async Task<Result<AuthTokenPair>> Handle(
             RegisterStudentCommand request, CancellationToken ct)
         {
             var registerResult = await _identity.RegisterStudentAsync(
                 request.FirstName, request.LastName, request.Email, request.Password);
 
             if (!registerResult.Succeeded)
-                return Result<AuthResponseDto>.Failure([.. registerResult.Errors]);
+                return Result<AuthTokenPair>.Failure([.. registerResult.Errors]);
 
             var userId = registerResult.Value;
 
@@ -53,7 +53,7 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.RegisterStudent
 
             var linkResult = await _identity.SetStudentIdClaimAsync(userId, student.Id);
             if (!linkResult.Succeeded)
-                return Result<AuthResponseDto>.Failure([.. linkResult.Errors]);
+                return Result<AuthTokenPair>.Failure([.. linkResult.Errors]);
 
             await _unitOfWork.SaveChangesAsync(ct);
 
@@ -63,8 +63,8 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.RegisterStudent
             var rawRefresh = _jwt.GenerateRefreshToken();
             await _tokenStore.StoreAsync(userId, rawRefresh, DateTime.UtcNow.AddDays(7), ct);
 
-            return Result<AuthResponseDto>.Success(new AuthResponseDto(
-                accessToken, expiresAt, userId, request.Email, [.. roles], student.Id));
+            var dto = new AuthResponseDto(accessToken, expiresAt, userId, request.Email, [.. roles], student.Id);
+            return Result<AuthTokenPair>.Success(new AuthTokenPair(dto, rawRefresh));
         }
     }
 }

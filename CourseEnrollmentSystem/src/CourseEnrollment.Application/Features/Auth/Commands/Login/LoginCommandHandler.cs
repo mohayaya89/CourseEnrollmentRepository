@@ -9,7 +9,7 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.Login
     /// Validates credentials and issues a new access + refresh token pair.
     /// Always returns a generic error message on failure — never reveals which field was wrong.
     /// </summary>
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResponseDto>>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthTokenPair>>
     {
         private static readonly string[] InvalidCredentialsError = ["Invalid credentials."];
 
@@ -27,16 +27,16 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.Login
             _tokenStore = tokenStore;
         }
 
-        public async Task<Result<AuthResponseDto>> Handle(LoginCommand request, CancellationToken ct)
+        public async Task<Result<AuthTokenPair>> Handle(LoginCommand request, CancellationToken ct)
         {
             var validateResult = await _identity.ValidatePasswordAsync(request.Email, request.Password);
             if (!validateResult.Succeeded)
-                return Result<AuthResponseDto>.Failure(InvalidCredentialsError);
+                return Result<AuthTokenPair>.Failure(InvalidCredentialsError);
 
             var userId = validateResult.Value;
             var userResult = await _identity.GetUserByIdAsync(userId);
             if (!userResult.Succeeded || userResult.Value is null)
-                return Result<AuthResponseDto>.Failure(InvalidCredentialsError);
+                return Result<AuthTokenPair>.Failure(InvalidCredentialsError);
 
             var user = userResult.Value;
             var roles = await _identity.GetRolesAsync(userId);
@@ -44,8 +44,8 @@ namespace CourseEnrollment.Application.Features.Auth.Commands.Login
             var rawRefresh = _jwt.GenerateRefreshToken();
             await _tokenStore.StoreAsync(userId, rawRefresh, DateTime.UtcNow.AddDays(7), ct);
 
-            return Result<AuthResponseDto>.Success(new AuthResponseDto(
-                accessToken, expiresAt, userId, user.Email, [.. roles], user.StudentId));
+            var dto = new AuthResponseDto(accessToken, expiresAt, userId, user.Email, [.. roles], user.StudentId);
+            return Result<AuthTokenPair>.Success(new AuthTokenPair(dto, rawRefresh));
         }
     }
 }

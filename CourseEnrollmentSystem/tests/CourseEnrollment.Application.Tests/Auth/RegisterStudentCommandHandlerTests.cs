@@ -60,9 +60,10 @@ namespace CourseEnrollment.Application.Tests.Auth
 
             Assert.That(result.Succeeded, Is.True);
             Assert.That(result.Value, Is.Not.Null);
-            Assert.That(result.Value!.AccessToken, Is.EqualTo("access-token"));
-            Assert.That(result.Value.Email, Is.EqualTo("jane@example.com"));
-            Assert.That(result.Value.Roles, Contains.Item("Student"));
+            Assert.That(result.Value!.Response.AccessToken, Is.EqualTo("access-token"));
+            Assert.That(result.Value.Response.Email, Is.EqualTo("jane@example.com"));
+            Assert.That(result.Value.Response.Roles, Contains.Item("Student"));
+            Assert.That(result.Value.RawRefreshToken, Is.EqualTo("raw-refresh-token"));
 
             await _students.Received(1).AddAsync(Arg.Any<Domain.Entities.Student>(), Arg.Any<CancellationToken>());
             await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
