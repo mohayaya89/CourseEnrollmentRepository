@@ -1,0 +1,31 @@
+# Claude Code / agent local state
+.claude/
+.claude-*
+CLAUDE.md.local
+
+# Local prompt scratch files (not for source control)
+JWT_AUTH_IMPLEMENTATION_PROMPT.md
+*.prompt.md
+prompts/
+
+# IDE & OS
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.DS_Store
+Thumbs.db
+
+# .NET build artifacts (root-level safety net; the inner .gitignore also covers these)
+**/bin/
+**/obj/
+**/[Tt]est[Rr]esult*/
+
+# Secrets - never commit these
+*.pfx
+*.p12
+secrets.json
+appsettings.*.Local.json
+.env
+.env.*
