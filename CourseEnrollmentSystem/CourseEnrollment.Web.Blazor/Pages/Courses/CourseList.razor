@@ -1,0 +1,76 @@
+@page "/courses"
+@inject CourseApiService Api
+@inject NavigationManager Nav
+
+<PageTitle>Courses</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-4">
+    <MudText Typo="Typo.h4">Courses</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               Href="/courses/create">
+        New Course
+    </MudButton>
+</MudStack>
+
+@if (_loading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+}
+else if (_courses is null)
+{
+    <MudAlert Severity="Severity.Error">Could not load courses.</MudAlert>
+}
+else
+{
+    <MudDataGrid T="CourseListModel"
+                 Items="_courses"
+                 Filterable="true"
+                 SortMode="SortMode.Multiple"
+                 Hover="true"
+                 Striped="true"
+                 RowClick="@OnRowClick">
+        <Columns>
+            <PropertyColumn Property="x => x.Title" Title="Title" />
+            <TemplateColumn Title="Status" Sortable="true">
+                <CellTemplate>
+                    <StatusBadge Status="@context.Item.Status" />
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="Actions" Sortable="false" Filterable="false">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(() => Nav.NavigateTo($"courses/{context.Item.Id}"))" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="CourseListModel" />
+        </PagerContent>
+    </MudDataGrid>
+}
+
+@code {
+    private CourseListModel[]? _courses;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCourses();
+    }
+
+    private async Task LoadCourses()
+    {
+        _loading = true;
+        _courses = await Api.GetCoursesAsync();
+        _loading = false;
+    }
+
+    private void OnRowClick(DataGridRowClickEventArgs<CourseListModel> args)
+    {
+        Nav.NavigateTo($"courses/{args.Item.Id}");
+    }
+}

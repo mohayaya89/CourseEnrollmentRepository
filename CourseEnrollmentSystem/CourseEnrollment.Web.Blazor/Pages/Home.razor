@@ -1,0 +1,89 @@
+@page "/"
+@inject CourseApiService Api
+
+<PageTitle>Dashboard</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Dashboard</MudText>
+
+@if (_loading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+}
+else if (_courses is null)
+{
+    <MudAlert Severity="Severity.Error">Failed to load dashboard data.</MudAlert>
+}
+else
+{
+    <MudGrid Spacing="3">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <MudText Typo="Typo.overline">Total Courses</MudText>
+                <MudText Typo="Typo.h3">@_courses.Length</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <MudText Typo="Typo.overline">Open</MudText>
+                <MudText Typo="Typo.h3" Color="Color.Success">
+                    @_courses.Count(c => c.Status == "Open")
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <MudText Typo="Typo.overline">Draft</MudText>
+                <MudText Typo="Typo.h3">
+                    @_courses.Count(c => c.Status == "Draft")
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4" Elevation="2">
+                <MudText Typo="Typo.overline">Closed / Archived</MudText>
+                <MudText Typo="Typo.h3" Color="Color.Error">
+                    @_courses.Count(c => c.Status is "Closed" or "Archived")
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudText Typo="Typo.h6" Class="mt-6 mb-2">Recent Courses</MudText>
+    <MudPaper Elevation="2">
+        <MudSimpleTable Hover="true" Striped="true">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in _courses.Take(5))
+                {
+                    <tr>
+                        <td>@course.Title</td>
+                        <td><StatusBadge Status="@course.Status" /></td>
+                        <td>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                       Href="@($"courses/{course.Id}")">
+                                View
+                            </MudButton>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </MudPaper>
+}
+
+@code {
+    private CourseListModel[]? _courses;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _courses = await Api.GetCoursesAsync();
+        _loading = false;
+    }
+}

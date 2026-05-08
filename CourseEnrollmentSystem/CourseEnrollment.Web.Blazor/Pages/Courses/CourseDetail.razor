@@ -1,0 +1,110 @@
+@page "/courses/{CourseId:guid}"
+@inject CourseApiService Api
+@inject ISnackbar Snackbar
+
+<PageTitle>Course Detail</PageTitle>
+
+@if (_loading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+}
+else if (_course is null)
+{
+    <MudAlert Severity="Severity.Error">Course not found.</MudAlert>
+}
+else
+{
+    <MudBreadcrumbs Items="_breadcrumbs" Class="mb-2" />
+
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="8">
+            <MudPaper Class="pa-6" Elevation="2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-4">
+                    <MudText Typo="Typo.h5">@_course.Title</MudText>
+                    <MudSpacer />
+                    <StatusBadge Status="@_course.Status" />
+                </MudStack>
+
+                <MudDivider Class="mb-4" />
+
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudText Typo="Typo.overline">Capacity</MudText>
+                        <MudText Typo="Typo.body1">@_course.Capacity</MudText>
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudText Typo="Typo.overline">Active Enrollments</MudText>
+                        <MudText Typo="Typo.body1">@_course.ActiveEnrollments / @_course.Capacity</MudText>
+                    </MudItem>
+                </MudGrid>
+
+                @if (_course.Status == "Open")
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Success"
+                               Class="mt-6"
+                               StartIcon="@Icons.Material.Filled.PersonAdd"
+                               OnClick="@EnrollCurrentUser"
+                               Disabled="@_enrolling">
+                        @(_enrolling ? "Enrolling..." : "Enroll Me")
+                    </MudButton>
+                }
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudPaper Class="pa-4" Elevation="2">
+                <MudText Typo="Typo.h6" GutterBottom="true">Enrollment Progress</MudText>
+                <MudProgressLinear Color="Color.Primary"
+                                   Value="@EnrollmentPercent"
+                                   Size="Size.Large"
+                                   Rounded="true"
+                                   Class="mb-2" />
+                <MudText Typo="Typo.caption">
+                    @_course.ActiveEnrollments of @_course.Capacity seats filled (@EnrollmentPercent%)
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    [Parameter] public Guid CourseId { get; set; }
+
+    private CourseDetailModel? _course;
+    private bool _loading = true;
+    private bool _enrolling;
+
+    private int EnrollmentPercent => _course is null || _course.Capacity == 0
+        ? 0
+        : (int)((_course.ActiveEnrollments / (double)_course.Capacity) * 100);
+
+    private readonly List<BreadcrumbItem> _breadcrumbs =
+    [
+        new BreadcrumbItem("Dashboard", href: "/"),
+        new BreadcrumbItem("Courses", href: "/courses"),
+        new BreadcrumbItem("Detail", href: null, disabled: true)
+    ];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _course = await Api.GetCourseByIdAsync(CourseId);
+        _loading = false;
+    }
+
+    private async Task EnrollCurrentUser()
+    {
+        _enrolling = true;
+        var success = await Api.EnrollAsync(CourseId);
+        _enrolling = false;
+
+        if (success)
+        {
+            Snackbar.Add("Enrolled successfully!", Severity.Success);
+            _course = await Api.GetCourseByIdAsync(CourseId);
+        }
+        else
+        {
+            Snackbar.Add("Enrollment failed. The course may be full or closed.", Severity.Error);
+        }
+    }
+}

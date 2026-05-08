@@ -1,0 +1,78 @@
+@inject CourseApiService Api
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-2" />
+            Create New Course
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_isValid">
+            <MudTextField @bind-Value="_model.Title"
+                          Label="Course Title"
+                          Required="true"
+                          RequiredError="Title is required."
+                          MaxLength="200"
+                          Counter="200"
+                          Class="mb-3" />
+
+            <MudNumericField @bind-Value="_model.Capacity"
+                             Label="Capacity"
+                             Required="true"
+                             Min="1"
+                             RequiredError="Capacity must be at least 1."
+                             Class="mb-3" />
+
+            <MudDatePicker @bind-Date="_deadlineDate"
+                           Label="Enrollment Deadline"
+                           Required="true"
+                           MinDate="DateTime.Today.AddDays(1)"
+                           Class="mb-3" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="@Submit"
+                   Disabled="@(!_isValid || _submitting)">
+            @(_submitting ? "Creating..." : "Create")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = default!;
+
+    private CreateCourseRequest _model = new();
+    private DateTime? _deadlineDate = DateTime.Today.AddDays(30);
+    private MudForm _form = default!;
+    private bool _isValid;
+    private bool _submitting;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+        if (!_isValid) return;
+
+        _model.EnrollmentDeadline = (_deadlineDate ?? DateTime.Today.AddDays(1)).ToUniversalTime();
+        _submitting = true;
+
+        var id = await Api.CreateCourseAsync(_model);
+        _submitting = false;
+
+        if (id.HasValue)
+        {
+            Snackbar.Add("Course created successfully!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(id.Value));
+        }
+        else
+        {
+            Snackbar.Add("Failed to create course. Check inputs and try again.", Severity.Error);
+        }
+    }
+}
