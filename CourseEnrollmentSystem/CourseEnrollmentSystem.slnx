@@ -1,5 +1,7 @@
 <Solution>
-  <Project Path="CourseEnrollment.Web.Blazor/CourseEnrollment.Web.Blazor.csproj" />
+  <Project Path="CourseEnrollment.Web.Blazor/CourseEnrollment.Web.Blazor.csproj">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
   <Project Path="src/CourseEnrollment.Api/CourseEnrollment.Api.csproj" />
   <Project Path="src/CourseEnrollment.Application/CourseEnrollment.Application.csproj" />
   <Project Path="src/CourseEnrollment.Domain/CourseEnrollment.Domain.csproj" />
