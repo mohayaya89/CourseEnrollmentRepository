@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using CourseEnrollment.Domain.Entities;
 using CourseEnrollment.Domain.Interfaces;
-using CourseEnrollment.Domain.Persistence;
+using CourseEnrollment.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseEnrollment.Infrastructure.Repository
 {
     public class CourseRepository : ICourseRepository
     {
-        private readonly AppDbContext _context;
+        private readonly CourseEnrollmentContext _context;
 
-        public CourseRepository(AppDbContext context)
+        public CourseRepository(CourseEnrollmentContext context)
         {
             _context = context;
         }

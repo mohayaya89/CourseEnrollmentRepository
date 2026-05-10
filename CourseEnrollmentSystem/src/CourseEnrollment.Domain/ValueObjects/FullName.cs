@@ -7,41 +7,41 @@ namespace CourseEnrollment.Domain.ValueObjects
 {
     public sealed class FullName : IEquatable<FullName>
     {
-        private FullName(string fistName, string lastName)
+        private FullName(string firstName, string lastName)
         {
-            FistName = fistName;
+            FirstName = firstName;
             LastName = lastName;
         }
 
-        public string FistName { get; }
+        public string FirstName { get; }
         public string LastName { get; }
 
-        public static FullName Create(string fistName, string lastName)
+        public static FullName Create(string firstName, string lastName)
         {
-            if (string.IsNullOrWhiteSpace(fistName))
+            if (string.IsNullOrWhiteSpace(firstName))
                 throw new DomainException("First name is required.");
             if (string.IsNullOrWhiteSpace(lastName))
                 throw new DomainException("Last name is required.");
-            return new FullName(fistName.Trim(), lastName.Trim());
+            return new FullName(firstName.Trim(), lastName.Trim());
         }
 
         public override string ToString()
         {
-            return $"{FistName} {LastName}";
+            return $"{FirstName} {LastName}";
         }
 
         public override bool Equals(object? obj)
-        
-            =>  obj is FullName other && 
-                FistName == other.FistName && 
+
+            =>  obj is FullName other &&
+                FirstName == other.FirstName &&
                 LastName == other.LastName;
-        
+
         public bool Equals(FullName? other)
-            =>  other is not null && 
-                FistName == other.FistName &&
+            =>  other is not null &&
+                FirstName == other.FirstName &&
                 LastName == other.LastName;
 
         public override int GetHashCode()
-            => HashCode.Combine(FistName, LastName);
+            => HashCode.Combine(FirstName, LastName);
     }
 }

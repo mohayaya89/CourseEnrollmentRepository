@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CourseEnrollment.Domain.Common
 {
-    public abstract class AuditableEntity : BaseEntity
+    public abstract class AuditableEntity : BasePerson
     {
         public DateTime CreatedOn { get; protected set; }
         public string? CreatedBy { get; protected set; }

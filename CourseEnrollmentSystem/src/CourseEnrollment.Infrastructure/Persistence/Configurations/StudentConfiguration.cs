@@ -15,7 +15,7 @@ namespace CourseEnrollment.Infrastructure.Persistence.Configurations
 
             builder.OwnsOne(s => s.Name, name =>
             {
-                name.Property(n => n.FistName).HasColumnName("FirstName").IsRequired();
+                name.Property(n => n.FirstName).HasColumnName("FirstName").IsRequired();
                 name.Property(n => n.LastName).HasColumnName("LastName").IsRequired();
             });
 

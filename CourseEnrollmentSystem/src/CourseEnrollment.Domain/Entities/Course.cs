@@ -8,7 +8,7 @@ using CourseEnrollment.Domain.Exceptions;
 
 namespace CourseEnrollment.Domain.Entities
 {
-    public class Course : BaseEntity
+    public class Course : BasePerson
     {
         private readonly List<Enrollment> _enrollments = new();
 
@@ -23,6 +23,9 @@ namespace CourseEnrollment.Domain.Entities
 
         public Course(string title, int capacity, DateTime enrollmentDeadline)
         {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new DomainException("Title is required.");
+
             if (capacity <= 0)
                 throw new DomainException("Capacity must be greater than zero.");
 

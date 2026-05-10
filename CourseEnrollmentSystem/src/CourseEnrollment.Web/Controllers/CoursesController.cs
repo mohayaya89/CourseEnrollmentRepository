@@ -1,4 +1,5 @@
-﻿using CourseEnrollment.Application.Features.Courses.Commands.EnrollStudent;
+﻿using CourseEnrollment.Application.Features.Courses.Commands.CreateCourse;
+using CourseEnrollment.Application.Features.Courses.Commands.EnrollStudent;
 using CourseEnrollment.Application.Features.Courses.Queries.GetCourseById;
 using CourseEnrollment.Application.Features.Courses.Queries.GetCourses;
 using MediatR;
@@ -25,6 +26,16 @@ namespace CourseEnrollment.Web.Controllers
         {
             var course = await _mediator.Send(new GetCourseByIdQuery(id));
             return View(course);
+        }
+
+        public IActionResult Create() => View();
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateCourseCommand command)
+        {
+            var id = await _mediator.Send(command);
+            return RedirectToAction("Details", new { id });
         }
 
         [HttpPost]

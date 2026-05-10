@@ -1,0 +1,33 @@
+@model CourseEnrollment.Application.Features.Courses.Commands.CreateCourse.CreateCourseCommand
+
+<h2>Create Course</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Capacity" class="form-label">Capacity</label>
+        <input asp-for="Capacity" type="number" class="form-control" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EnrollmentDeadline" class="form-label">Enrollment Deadline</label>
+        <input asp-for="EnrollmentDeadline" type="datetime-local" class="form-control" />
+        <span asp-validation-for="EnrollmentDeadline" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

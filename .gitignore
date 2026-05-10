@@ -1,31 +1,40 @@
-# Claude Code / agent local state
-.claude/
-.claude-*
-CLAUDE.md.local
+  # Claude Code / agent local state
+   .claude/
+   .claude-*
+   CLAUDE.md.local
 
-# Local prompt scratch files (not for source control)
-JWT_AUTH_IMPLEMENTATION_PROMPT.md
-*.prompt.md
-prompts/
+   # Local prompt scratch files (not for source control)
+   JWT_AUTH_IMPLEMENTATION_PROMPT.md
+   *.prompt.md
+   prompts/
 
-# IDE & OS
-.vs/
-.vscode/
-.idea/
-*.user
-*.suo
-.DS_Store
-Thumbs.db
+   # IDE & OS
+   .vs/
+   .vscode/
+   .idea/
+   *.user
+   *.suo
+   .DS_Store
+   Thumbs.db
 
-# .NET build artifacts (root-level safety net; the inner .gitignore also covers these)
-**/bin/
-**/obj/
-**/[Tt]est[Rr]esult*/
+   # .NET build artifacts (root-level safety net; the inner .gitignore also covers these)
+   **/bin/
+   **/obj/
+   **/[Tt]est[Rr]esult*/
 
-# Secrets - never commit these
-*.pfx
-*.p12
-secrets.json
-appsettings.*.Local.json
-.env
-.env.*
+   # Secrets — never commit these
+   *.pfx
+   *.p12
+   secrets.json
+   appsettings.*.Local.json
+   .env
+   .env.*
+
+   # EF Core migrations — generated locally, never checked in for this project.
+   # Anyone setting up the project will regenerate these themselves via:
+   #   dotnet ef migrations add <Name> --project ... --startup-project ...
+   **/Migrations/
+/.claude
+/JWT_AUTH_IMPLEMENTATION_PROMPT.md
+**/Migrations/
+

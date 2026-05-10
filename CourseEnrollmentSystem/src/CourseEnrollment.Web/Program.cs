@@ -1,10 +1,13 @@
 using CourseEnrollment.Application;
 using CourseEnrollment.Infrastructure.DependencyInjection;
+using CourseEnrollment.Web.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAutoMapper(cfg => { }, typeof(ApplicationAssemblyMarker).Assembly);

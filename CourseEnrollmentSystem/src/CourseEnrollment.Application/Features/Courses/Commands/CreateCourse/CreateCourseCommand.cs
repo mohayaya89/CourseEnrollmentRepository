@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using MediatR;
 
 namespace CourseEnrollment.Application.Features.Courses.Commands.CreateCourse
 {
-    internal class CreateCourseCommand
-    {
-    }
+    public record CreateCourseCommand(
+        string Title,
+        int Capacity,
+        DateTime EnrollmentDeadline) : IRequest<Guid>;
 }

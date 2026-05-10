@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using CourseEnrollment.Application.Common.Interfaces;
 using CourseEnrollment.Domain.Common;
-using CourseEnrollment.Domain.Persistence;
+using CourseEnrollment.Infrastructure.Persistence;
 
 namespace CourseEnrollment.Infrastructure.UnitOfWork
 {
     public class EfUnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext _context;
+        private readonly CourseEnrollmentContext _context;
         private readonly IDomainEventDispatcher _dispatcher;
 
-        public EfUnitOfWork(AppDbContext context, IDomainEventDispatcher dispatcher)
+        public EfUnitOfWork(CourseEnrollmentContext context, IDomainEventDispatcher dispatcher)
         {
             _context = context;
             _dispatcher = dispatcher;
@@ -21,7 +21,7 @@ namespace CourseEnrollment.Infrastructure.UnitOfWork
         public async Task<int> SaveChangesAsync(CancellationToken ct)
         {
             var domainEntities = _context.ChangeTracker
-                .Entries<BaseEntity>()
+                .Entries<BasePerson>()
                 .Where(x => x.Entity.DomainEvents.Any())
                 .ToList();
 

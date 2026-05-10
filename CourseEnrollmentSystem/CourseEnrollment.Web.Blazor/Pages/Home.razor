@@ -1,89 +1,266 @@
 @page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 @inject CourseApiService Api
+@inject AuthService AuthService
 
-<PageTitle>Dashboard</PageTitle>
+<AuthorizeView Context="auth">
 
-<MudText Typo="Typo.h4" GutterBottom="true">Dashboard</MudText>
+    <Authorized>
+        <PageTitle>Dashboard</PageTitle>
 
-@if (_loading)
-{
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
-}
-else if (_courses is null)
-{
-    <MudAlert Severity="Severity.Error">Failed to load dashboard data.</MudAlert>
-}
-else
-{
-    <MudGrid Spacing="3">
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Class="pa-4" Elevation="2">
-                <MudText Typo="Typo.overline">Total Courses</MudText>
-                <MudText Typo="Typo.h3">@_courses.Length</MudText>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Class="pa-4" Elevation="2">
-                <MudText Typo="Typo.overline">Open</MudText>
-                <MudText Typo="Typo.h3" Color="Color.Success">
-                    @_courses.Count(c => c.Status == "Open")
-                </MudText>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Class="pa-4" Elevation="2">
-                <MudText Typo="Typo.overline">Draft</MudText>
-                <MudText Typo="Typo.h3">
-                    @_courses.Count(c => c.Status == "Draft")
-                </MudText>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Class="pa-4" Elevation="2">
-                <MudText Typo="Typo.overline">Closed / Archived</MudText>
-                <MudText Typo="Typo.h3" Color="Color.Error">
-                    @_courses.Count(c => c.Status is "Closed" or "Archived")
-                </MudText>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
+        <MudText Typo="Typo.h4" GutterBottom="true">Dashboard</MudText>
 
-    <MudText Typo="Typo.h6" Class="mt-6 mb-2">Recent Courses</MudText>
-    <MudPaper Elevation="2">
-        <MudSimpleTable Hover="true" Striped="true">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var course in _courses.Take(5))
-                {
-                    <tr>
-                        <td>@course.Title</td>
-                        <td><StatusBadge Status="@course.Status" /></td>
-                        <td>
-                            <MudButton Variant="Variant.Text" Color="Color.Primary"
-                                       Href="@($"courses/{course.Id}")">
-                                View
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-4" />
+        }
+        else if (_courses is null)
+        {
+            <MudAlert Severity="Severity.Error">Failed to load dashboard data.</MudAlert>
+        }
+        else
+        {
+            <MudGrid Spacing="3">
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.overline">Total Courses</MudText>
+                        <MudText Typo="Typo.h3">@_courses.Length</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.overline">Open</MudText>
+                        <MudText Typo="Typo.h3" Color="Color.Success">
+                            @_courses.Count(c => c.Status == "Open")
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.overline">Draft</MudText>
+                        <MudText Typo="Typo.h3">
+                            @_courses.Count(c => c.Status == "Draft")
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Class="pa-4" Elevation="2">
+                        <MudText Typo="Typo.overline">Closed / Archived</MudText>
+                        <MudText Typo="Typo.h3" Color="Color.Error">
+                            @_courses.Count(c => c.Status is "Closed" or "Archived")
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <MudText Typo="Typo.h6" Class="mt-6 mb-2">Recent Courses</MudText>
+            <MudPaper Elevation="2">
+                <MudSimpleTable Hover="true" Striped="true">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var course in _courses.Take(5))
+                        {
+                            <tr>
+                                <td>@course.Title</td>
+                                <td><StatusBadge Status="@course.Status" /></td>
+                                <td>
+                                    <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                               Href="@($"courses/{course.Id}")">
+                                        View
+                                    </MudButton>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudPaper>
+        }
+    </Authorized>
+
+    <NotAuthorized>
+        <PageTitle>Welcome — Course Enrollment System</PageTitle>
+
+        <div style="display:flex; flex-direction:column; align-items:center; padding-top:5rem;">
+
+            <MudIcon Icon="@Icons.Material.Filled.School"
+                     Color="Color.Primary"
+                     Style="font-size:4rem;"
+                     Class="mb-3" />
+
+            <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">
+                Welcome to Course Enrollment
+            </MudText>
+            <MudText Typo="Typo.body1" Align="Align.Center" Color="Color.Secondary" Class="mb-6">
+                Sign in to access your courses, or create an account to get started.
+            </MudText>
+
+            <MudPaper Elevation="3" Style="width:100%; max-width:440px;">
+                <MudTabs Centered="true" Color="Color.Primary" Rounded="true" PanelClass="pa-6">
+
+                    <MudTabPanel Text="Sign In">
+                        <EditForm Model="_login" OnValidSubmit="HandleLogin">
+                            <DataAnnotationsValidator />
+
+                            <MudTextField @bind-Value="_login.Email"
+                                          Label="Email"
+                                          InputType="InputType.Email"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-3" />
+
+                            <MudTextField @bind-Value="_login.Password"
+                                          Label="Password"
+                                          InputType="InputType.Password"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-4" />
+
+                            @if (_loginErrors.Length > 0)
+                            {
+                                <MudAlert Severity="Severity.Error" Class="mb-3">@_loginErrors[0]</MudAlert>
+                            }
+
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       FullWidth="true"
+                                       Disabled="_loginLoading">
+                                @(_loginLoading ? "Signing in…" : "Sign In")
                             </MudButton>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </MudSimpleTable>
-    </MudPaper>
-}
+                        </EditForm>
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="Register">
+                        <EditForm Model="_register" OnValidSubmit="HandleRegister">
+                            <DataAnnotationsValidator />
+
+                            <MudGrid Spacing="2" Class="mb-1">
+                                <MudItem xs="6">
+                                    <MudTextField @bind-Value="_register.FirstName"
+                                                  Label="First Name"
+                                                  Variant="Variant.Outlined" />
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudTextField @bind-Value="_register.LastName"
+                                                  Label="Last Name"
+                                                  Variant="Variant.Outlined" />
+                                </MudItem>
+                            </MudGrid>
+
+                            <MudTextField @bind-Value="_register.Email"
+                                          Label="Email"
+                                          InputType="InputType.Email"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-3" />
+
+                            <MudTextField @bind-Value="_register.Password"
+                                          Label="Password"
+                                          InputType="InputType.Password"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-4" />
+
+                            @if (_registerErrors.Length > 0)
+                            {
+                                <MudAlert Severity="Severity.Error" Class="mb-3">@_registerErrors[0]</MudAlert>
+                            }
+
+                            <MudButton ButtonType="ButtonType.Submit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       FullWidth="true"
+                                       Disabled="_registerLoading">
+                                @(_registerLoading ? "Creating account…" : "Create Account")
+                            </MudButton>
+                        </EditForm>
+                    </MudTabPanel>
+
+                </MudTabs>
+            </MudPaper>
+
+        </div>
+    </NotAuthorized>
+
+</AuthorizeView>
 
 @code {
+    // Dashboard state (authenticated view)
     private CourseListModel[]? _courses;
     private bool _loading = true;
+
+    // Login form state
+    private readonly LoginFormModel _login = new();
+    private string[] _loginErrors = [];
+    private bool _loginLoading;
+
+    // Register form state
+    private readonly RegisterFormModel _register = new();
+    private string[] _registerErrors = [];
+    private bool _registerLoading;
 
     protected override async Task OnInitializedAsync()
     {
         _courses = await Api.GetCoursesAsync();
         _loading = false;
+    }
+
+    private async Task HandleLogin()
+    {
+        _loginLoading = true;
+        _loginErrors = [];
+
+        var (success, errors) = await AuthService.LoginAsync(
+            new LoginRequest(_login.Email, _login.Password));
+
+        if (!success)
+            _loginErrors = errors;
+
+        _loginLoading = false;
+    }
+
+    private async Task HandleRegister()
+    {
+        _registerLoading = true;
+        _registerErrors = [];
+
+        var (success, errors) = await AuthService.RegisterAsync(
+            new RegisterStudentRequest(
+                _register.FirstName, _register.LastName,
+                _register.Email, _register.Password));
+
+        if (!success)
+            _registerErrors = errors;
+
+        _registerLoading = false;
+    }
+
+    private class LoginFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private class RegisterFormModel
+    {
+        [System.ComponentModel.DataAnnotations.Required]
+        public string FirstName { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required]
+        public string LastName { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.MinLength(8)]
+        public string Password { get; set; } = string.Empty;
     }
 }

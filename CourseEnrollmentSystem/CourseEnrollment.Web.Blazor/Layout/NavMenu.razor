@@ -1,29 +1,14 @@
 <MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All"
-                Icon="@Icons.Material.Filled.Dashboard">
-        Dashboard
-    </MudNavLink>
-    <MudNavLink Href="courses"
-                Icon="@Icons.Material.Filled.MenuBook">
-        Courses
-    </MudNavLink>
-
     <AuthorizeView>
         <Authorized>
-            <MudNavLink Href="/logout"
-                        Icon="@Icons.Material.Filled.Logout">
-                Logout (@context.User.Identity?.Name)
+            <MudNavLink Href="" Match="NavLinkMatch.All"
+                        Icon="@Icons.Material.Filled.Dashboard">
+                Dashboard
+            </MudNavLink>
+            <MudNavLink Href="courses"
+                        Icon="@Icons.Material.Filled.MenuBook">
+                Courses
             </MudNavLink>
         </Authorized>
-        <NotAuthorized>
-            <MudNavLink Href="/login"
-                        Icon="@Icons.Material.Filled.Login">
-                Sign In
-            </MudNavLink>
-            <MudNavLink Href="/register"
-                        Icon="@Icons.Material.Filled.PersonAdd">
-                Register
-            </MudNavLink>
-        </NotAuthorized>
     </AuthorizeView>
 </MudNavMenu>

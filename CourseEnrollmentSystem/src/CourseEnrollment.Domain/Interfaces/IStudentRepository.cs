@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using CourseEnrollment.Domain.Entities;
 
 namespace CourseEnrollment.Domain.Interfaces
 {
-    internal interface IStudentRepository
+    public interface IStudentRepository
     {
+        Task<Student?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<Student>> GetAllAsync(CancellationToken cancellationToken);
+        Task AddAsync(Student student, CancellationToken cancellationToken);
     }
 }

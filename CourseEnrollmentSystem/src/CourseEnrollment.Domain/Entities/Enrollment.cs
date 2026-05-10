@@ -8,7 +8,7 @@ using CourseEnrollment.Domain.Exceptions;
 
 namespace CourseEnrollment.Domain.Entities
 {
-    public class Enrollment : BaseEntity
+    public class Enrollment : BasePerson
     {
         public Guid StudentId { get; private set; }
         public Guid CourseId { get; private set; }
